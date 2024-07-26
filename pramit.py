@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 
 st.title("Marketing Data Analysis App")
 
@@ -32,15 +30,11 @@ if uploaded_file is not None:
 
         # Histogram
         st.write(f"Histogram of {num_column}")
-        plt.figure(figsize=(10, 6))
-        sns.histplot(df[num_column], kde=True)
-        st.pyplot(plt)
+        st.bar_chart(df[num_column].value_counts())
 
         # Boxplot
         st.write(f"Boxplot of {num_column}")
-        plt.figure(figsize=(10, 6))
-        sns.boxplot(x=df[num_column])
-        st.pyplot(plt)
+        st.write(df[[num_column]].boxplot())
 
     if categorical_columns:
         st.write("Categorical Columns")
@@ -48,24 +42,17 @@ if uploaded_file is not None:
 
         # Bar chart
         st.write(f"Bar Chart of {cat_column}")
-        plt.figure(figsize=(10, 6))
-        sns.countplot(x=cat_column, data=df)
-        st.pyplot(plt)
+        st.bar_chart(df[cat_column].value_counts())
 
     # Correlation heatmap
     st.subheader("Correlation Heatmap")
     if len(numerical_columns) > 1:
-        plt.figure(figsize=(10, 6))
-        sns.heatmap(df[numerical_columns].corr(), annot=True, cmap='coolwarm')
-        st.pyplot(plt)
-    else:
-        st.write("Not enough numerical columns for correlation heatmap")
+        corr = df[numerical_columns].corr()
+        st.write(corr.style.background_gradient(cmap='coolwarm'))
 
     # Pairplot
     st.subheader("Pairplot")
     if len(numerical_columns) > 1:
         st.write("Pairplot of numerical columns")
-        sns.pairplot(df[numerical_columns])
-        st.pyplot(plt)
-    else:
-        st.write("Not enough numerical columns for pairplot")
+        st.write(pd.plotting.scatter_matrix(df[numerical_columns], figsize=(10, 10)))
+
